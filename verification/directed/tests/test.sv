@@ -1,3 +1,6 @@
+// Generación de señales
+// TEST
+
 module test (
     vif_if vif
 );
@@ -11,7 +14,7 @@ module test (
     // Apply reset
     reset();
 
-    count();
+    test0();
 
     // Drain time
     #(200ns);
@@ -23,26 +26,32 @@ module test (
   // ======================= TASKS ======================== //
 
   task automatic reset();
-    vif.rst_i = 1'b1;
-    vif.up_i  = 1'b0;
-    repeat (2) @(vif.cb);
-    vif.cb.rst_i <= 1'b0;
-    repeat (20) @(vif.cb);
+    vif.rst_n = 1'b1;
+    vif.dly   = 1'b0;
+    vif.done  = 1'b0;
+    vif.req   = 1'b0;
+    #5;
+    vif.rst_n <= 1'b0;
+    #5;
+    vif.rst_n <= 1'b1;
+    #20;
+    vif.rst_n <= 1'b0;
+    #20;
+    vif.rst_n <= 1'b1;
+    #10;
+    
   endtask : reset
 
 
-  task automatic count();
-    vif.rst_i = 1;
-    vif.up_i = 0;
-    #30;
-    vif.rst_i = 0;
-    vif.up_i = 1;
-  #200;
-    vif.up_i = 0;
-    vif.rst_i = 1;
-    #25;
-    vif.rst_i = 0;
-  endtask : count
+  task automatic test0();
+    vif.req = 1;
+    #10;
+    vif.req = 1;
+    #20;
+    vif.req = 0;
+    #20;
+
+  endtask : test0
 
 
 endmodule : test

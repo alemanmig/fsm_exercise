@@ -6,8 +6,8 @@ module sva (
     input logic req,
     input logic clk,
     input logic rst_n,
-    input logic gnt,
-    input wire [1:0]  state
+    input logic gnt
+//    input wire [1:0]  state
 );
 
     parameter [1:0] IDLE  = 2'b00,
@@ -24,7 +24,7 @@ module sva (
 //    @(posedge clk)
 //    (!rst_n) |=> (state == IDLE)
     @(negedge rst_n)
-     ##0 (state == IDLE)   // En ese mismo instante, state debe ser IDLE
+     ##0 (dut.state == IDLE)   // En ese mismo instante, state debe ser IDLE
   ) else $error("[FAIL] ast_reset_to_idle in t = %t", $time);
 
   // Durante reset, gnt debe ser 0
@@ -40,7 +40,7 @@ module sva (
   // IDLE → BBUSY si req=1
   ast_idle_to_bbusy : assert property (
     @(posedge clk) disable iff (!rst_n)
-    (state == IDLE && req) |=> (state == BBUSY)
+    (dut.state == IDLE && req) |=> (dut.state == BBUSY)
   ) else $error("[FAIL] ast_idle_to_bbusy");
     
  //===========================================================================
@@ -51,7 +51,7 @@ module sva (
  // Cubrir que el reset ocurrió y el estado llegó a IDLE
   cov_reset_to_idle : cover property (
     @(negedge rst_n)
-    ##0 (state == IDLE)
+    ##0 (dut.state == IDLE)
     );
     
  // Cubrir que gnt estaba en 0 durante reset
@@ -63,25 +63,25 @@ module sva (
  // IDLE permanece en IDLE sin req
    cov_idle_stays_idle : cover property (
     @(posedge clk) disable iff (!rst_n)
-    (state == IDLE && !req) ##1 (state == IDLE)
+    (dut.state == IDLE && !req) ##1 (dut.state == IDLE)
    );
 
  // IDLE → BBUSY con req
   cov_idle_to_bbusy : cover property (
     @(posedge clk) disable iff (!rst_n)
-    (state == IDLE && req) ##1 (state == BBUSY)
+    (dut.state == IDLE && req) ##1 (dut.state == BBUSY)
   );
     
  // BBUSY permanece en BBUSY sin done
   cov_bbusy_stays_bbusy : cover property (
     @(posedge clk) disable iff (!rst_n)
-    (state == BBUSY && !done) ##1 (state == BBUSY)
+    (dut.state == BBUSY && !done) ##1 (dut.state == BBUSY)
   );
 
  // BBUSY → BWAIT con done y dly
   cov_bbusy_to_bwait : cover property (
     @(posedge clk) disable iff (!rst_n)
-    (state == BBUSY && done && dly) ##1 (state == BWAIT)
+    (dut.state == BBUSY && done && dly) ##1 (dut.state == BWAIT)
   );
 
 

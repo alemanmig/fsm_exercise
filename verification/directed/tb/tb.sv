@@ -41,8 +41,8 @@ module tb;
       .req(vif.req),
       .clk(vif.clk),
       .rst_n(vif.rst_n),
-      .gnt(vif.gnt),
-      .state (state)  // señal interna accesible dentro del scope del bind
+      .gnt(vif.gnt)
+    //  .state (state)  // señal interna accesible dentro del scope del bind
   );
 
   initial begin
