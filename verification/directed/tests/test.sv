@@ -26,7 +26,7 @@ module test (
   // ======================= TASKS ======================== //
 
   task automatic reset();
-    vif.rst_n = 1'b1;
+    vif.rst_n = 1'b0;
     vif.dly   = 1'b0;
     vif.done  = 1'b0;
     vif.req   = 1'b0;
