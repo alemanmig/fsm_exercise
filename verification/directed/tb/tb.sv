@@ -23,7 +23,7 @@ module tb;
   test top_test (vif);
 
   // Instantiation
-  fsm_cc4_2 
+  fsm_cc4_fp 
     dut (
       .dly(vif.dly),
       .done(vif.done),
@@ -34,7 +34,7 @@ module tb;
   );
   
   // SVA
-  bind fsm_cc4_2 sva 
+  bind fsm_cc4_fp sva 
   dut_sva (
       .dly(vif.dly),
       .done(vif.done),
